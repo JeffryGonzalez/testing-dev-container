@@ -1,0 +1,25 @@
+// A bare machine for following the Node list: Ubuntu, zsh, git, curl, and no Node,
+// no Homebrew, no version manager. Open specimens/setup/ in it, so the agent sees the
+// kit (format.md, install-node.md, run.md) and nothing else from the repository.
+//
+// Deliberately missing: Node. Anything that installs Node as a dependency (including
+// some agent CLIs' devcontainer features) would answer the list's first step for it.
+{
+  "name": "list-thing: bare machine for the Node list",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": false
+    }
+  },
+  "remoteUser": "vscode",
+  // Claude Code from its native installer, a standalone binary in ~/.local/bin. Not
+  // the ghcr.io/anthropics/devcontainer-features/claude-code feature: that one
+  // installs Node 18 from NodeSource when Node is missing, then Claude Code with npm,
+  // and the list's first step would find v18 already there. (That's a different test,
+  // "an old Node is installed", worth running on purpose some other time.)
+  // Afterward, `which -a node` should print nothing.
+  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash && (which -a node || echo 'no node: good')"
+}
